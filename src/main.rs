@@ -1,3 +1,5 @@
+use std::ffi::OsString;
+
 use sysinfo::System;
 
 fn main() {
@@ -15,16 +17,19 @@ fn main() {
         let p_disk_usage = process.disk_usage().total_written_bytes; // fixme
         let p_start_time = process.start_time(); // convert
         let p_status = process.status();
-        let p_cmd = process.cmd();
+
+        let p_cmd_os_string= process.cmd().join(&OsString::from(" "));
+        let p_cmd = p_cmd_os_string.into_string().expect("Error during converting osstr -> str");
+
         println!(
-            "{0} {1} {2} {3} {4} {5}", 
+            "{0} {1} {2} {3} {4} {5} {6}", 
             pid, 
             p_name, 
             p_cpu_usage, 
             p_disk_usage, 
-            p_start_time, 
+            p_start_time,
             p_status, 
-            // p_cmd
+            p_cmd
         )
     }
 }

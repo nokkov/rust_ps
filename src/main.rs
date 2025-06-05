@@ -30,7 +30,7 @@ fn main() {
         let p_cmd = p_cmd_os_string.to_str().expect("Error during converting osstr -> str");
 
         println!(
-            "{0} | {1} | {2} | {3} | {4} | {5} | {6} | {7}", 
+            "{0: <20} | {1: <20} | {2: <20} | {3: <20} | {4: <20} | {5: <20} | {6: <20} | {7: <20}", 
             pid, 
             p_name, 
             p_cpu_usage, 

@@ -17,7 +17,10 @@ fn main() {
     // println!("=> system:");
     // println!("System hostname: {:?}", System::host_name().unwrap());
 
-    println!("[pid] [name] [cpu_usage] [read_bytes] [written_bytes] [elapsed_time] [status] [cmd]");
+    println!(
+        "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}",
+        "PID", "NAME", "CPU%", "READ(B)", "WRITTEN(B)", "ELAPSED(M)", "STATUS", "CMD"
+    );
 
     for (pid, process) in sys.processes() {
         let p_name = process.name().to_str().unwrap();

@@ -2,6 +2,14 @@ use std::ffi::OsString;
 use chrono::{DateTime, Utc};
 use sysinfo::System;
 
+fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
+    if s.len() > max_len {
+        format!("{:.width$}...", s, width = max_len - 3)
+    } else {
+        s.to_string()
+    }
+}
+
 fn main() {
     let mut sys = System::new();
     sys.refresh_all();
@@ -16,6 +24,7 @@ fn main() {
         let p_cpu_usage = process.cpu_usage();
 
         let p_disk_usage = process.disk_usage();
+
         let p_read_bytes = p_disk_usage.total_read_bytes;
         let p_written_bytes = p_disk_usage.total_written_bytes;
 
@@ -27,21 +36,18 @@ fn main() {
         let p_status = process.status();
 
         let p_cmd_os_string= process.cmd().join(&OsString::from(" "));
-        let mut p_cmd = p_cmd_os_string.to_str().expect("Error during converting osstr -> str");
-        if p_cmd.len() > 10 {
-            p_cmd = &p_cmd[0..10];
-        }
+        let p_cmd = p_cmd_os_string.to_str().expect("Error during converting osstr -> str");
 
         println!(
             "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}", 
             pid, 
-            p_name, 
+            truncate_and_ellipsis(&p_name.to_string(), 10),
             p_cpu_usage, 
-            p_read_bytes,
-            p_written_bytes, 
-            p_elapsed_time,
+            truncate_and_ellipsis(&p_read_bytes.to_string(), 10),
+            truncate_and_ellipsis(&p_written_bytes.to_string(), 10), 
+            truncate_and_ellipsis(&p_elapsed_time.to_string(), 10),
             p_status, 
-            p_cmd
+            truncate_and_ellipsis(&p_cmd.to_string(), 10)
         )
     }
 }

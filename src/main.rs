@@ -31,7 +31,8 @@ fn main() {
         let p_start_time_timestamp = process.start_time().to_string().parse::<i64>().unwrap();
         let p_start_time_date = DateTime::from_timestamp(p_start_time_timestamp, 0).unwrap();
         let current_date_time = Utc::now();
-        let p_elapsed_time = current_date_time - p_start_time_date;
+
+        let p_elapsed_time = (current_date_time - p_start_time_date).num_minutes();
 
         let p_status = process.status();
 

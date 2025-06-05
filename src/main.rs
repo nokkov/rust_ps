@@ -27,10 +27,13 @@ fn main() {
         let p_status = process.status();
 
         let p_cmd_os_string= process.cmd().join(&OsString::from(" "));
-        let p_cmd = p_cmd_os_string.to_str().expect("Error during converting osstr -> str");
+        let mut p_cmd = p_cmd_os_string.to_str().expect("Error during converting osstr -> str");
+        if p_cmd.len() > 10 {
+            p_cmd = &p_cmd[0..10];
+        }
 
         println!(
-            "{0: <20} | {1: <20} | {2: <20} | {3: <20} | {4: <20} | {5: <20} | {6: <20} | {7: <20}", 
+            "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}", 
             pid, 
             p_name, 
             p_cpu_usage, 

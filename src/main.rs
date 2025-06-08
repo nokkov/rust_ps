@@ -44,13 +44,13 @@ fn main() {
 
         println!(
             "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}", 
-            pid, 
+            truncate_and_ellipsis(&pid.to_string(), 10), 
             truncate_and_ellipsis(&p_name.to_string(), 10),
-            p_cpu_usage, 
+            truncate_and_ellipsis(&p_cpu_usage.to_string(), 10), 
             truncate_and_ellipsis(&p_read_bytes.to_string(), 10),
             truncate_and_ellipsis(&p_written_bytes.to_string(), 10), 
             truncate_and_ellipsis(&p_elapsed_time.to_string(), 10),
-            p_status, 
+            truncate_and_ellipsis(&p_status.to_string(), 10), 
             truncate_and_ellipsis(&p_cmd.to_string(), 10)
         )
     }

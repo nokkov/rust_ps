@@ -5,4 +5,5 @@ edition = "2024"
 
 [dependencies]
 chrono = "0.4.41"
+clearscreen = "4.0.1"
 sysinfo = "0.35.1"

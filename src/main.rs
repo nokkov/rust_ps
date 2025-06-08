@@ -1,6 +1,7 @@
-use std::{ffi::OsString, thread, time::Duration};
+use std::{ffi::OsString, io::{self, Write}, thread, time::Duration};
 use chrono::{DateTime, Utc};
 use sysinfo::System;
+use termion::{clear, cursor};
 
 fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
     if s.len() > max_len {
@@ -12,20 +13,19 @@ fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
 
 fn main() {
     let mut sys = System::new();
+    let mut stdout = io::stdout();
 
-    loop {
+    write!(stdout, "{}{}", cursor::Hide, clear::All).unwrap();
+    write!(stdout, "System hostname: {:?}", System::host_name().unwrap_or_else(|| "N/A".to_string())).unwrap();
+    write!(stdout, "Total processes: {}\r\n", sys.processes().len()).unwrap();
+    write!(stdout, "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}",
+    "PID", "NAME", "CPU%", "READ(B)", "WRITTEN(B)", "ELAPSED(M)", "STATUS", "CMD").unwrap();
 
-        clearscreen::clear().expect("failed to clear screen");
+    stdout.flush().unwrap();
+    
+    loop { 
 
         sys.refresh_all();
-
-        println!("System hostname: {:?}", System::host_name().unwrap_or_else(|| "N/A".to_string()));
-        println!("Total processes: {}", sys.processes().len());
-
-        println!(
-        "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}",
-        "PID", "NAME", "CPU%", "READ(B)", "WRITTEN(B)", "ELAPSED(M)", "STATUS", "CMD"
-    );
 
         for (pid, process) in sys.processes() {
             let p_name = process.name().to_str().unwrap();

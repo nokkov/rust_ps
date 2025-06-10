@@ -19,7 +19,6 @@ fn main() {
 
     write!(stdout, "{}{}", cursor::Goto(1, 1), clear::All).unwrap();
     write!(stdout, "System hostname: {:?}\n", System::host_name().unwrap_or_else(|| "N/A".to_string())).unwrap();
-    write!(stdout, "Total processes: {}\r\n", sys.processes().len()).unwrap();
     write!(stdout, "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}",
     "PID", "NAME", "CPU%", "READ(B)", "WRITTEN(B)", "ELAPSED(MIN)", "STATUS", "CMD").unwrap();
 

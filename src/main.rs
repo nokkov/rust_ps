@@ -15,15 +15,20 @@ fn main() {
     let mut sys = System::new();
     let mut stdout = io::stdout().lock();
 
-    write!(stdout, "{}{}", cursor::Hide, clear::All).unwrap();
-    write!(stdout, "System hostname: {:?}", System::host_name().unwrap_or_else(|| "N/A".to_string())).unwrap();
+    //TODO: alternate screen
+
+    write!(stdout, "{}{}", cursor::Goto(1, 1), clear::All).unwrap();
+    write!(stdout, "System hostname: {:?}\n", System::host_name().unwrap_or_else(|| "N/A".to_string())).unwrap();
     write!(stdout, "Total processes: {}\r\n", sys.processes().len()).unwrap();
     write!(stdout, "{0: <10} | {1: <10} | {2: <10} | {3: <10} | {4: <10} | {5: <10} | {6: <10} | {7: <10}",
     "PID", "NAME", "CPU%", "READ(B)", "WRITTEN(B)", "ELAPSED(M)", "STATUS", "CMD").unwrap();
 
     stdout.flush().unwrap();
     
-    loop { 
+    loop {
+
+        write!(stdout, "{}{}", cursor::Goto(1, 5), clear::AfterCursor).unwrap(); 
+        stdout.flush().unwrap();
 
         sys.refresh_all();
 
@@ -60,6 +65,6 @@ fn main() {
             )
         }
 
-        thread::sleep(Duration::from_secs(2));
+        thread::sleep(Duration::from_secs(5)); // TODO: custom refresh time
     }
 }

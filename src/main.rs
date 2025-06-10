@@ -32,7 +32,7 @@ fn main() {
 
         sys.refresh_all();
 
-        for (pid, process) in sys.processes() {
+        for (pid, process) in sys.processes().iter().take(10) {
             let p_name = process.name().to_str().unwrap();
             let p_cpu_usage = process.cpu_usage();
 

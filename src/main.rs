@@ -11,6 +11,19 @@ fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
     }
 }
 
+//FIXME: &str or String?
+
+struct ProcessInfo {
+    pid: String,
+    p_name: String,
+    p_cpu_usage: String,
+    p_read_bytes: String,
+    p_written_bytes: String,
+    p_elapsed_time: String, 
+    p_status: String,
+    p_cmd: String
+}
+
 fn main() {
     let mut sys = System::new();
     let mut stdout = io::stdout().lock();

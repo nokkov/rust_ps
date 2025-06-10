@@ -13,7 +13,7 @@ fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
 
 fn main() {
     let mut sys = System::new();
-    let mut stdout = io::stdout();
+    let mut stdout = io::stdout().lock();
 
     write!(stdout, "{}{}", cursor::Hide, clear::All).unwrap();
     write!(stdout, "System hostname: {:?}", System::host_name().unwrap_or_else(|| "N/A".to_string())).unwrap();

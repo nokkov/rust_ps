@@ -1,6 +1,6 @@
 use std::{ffi::OsString, io::{self, Write}, thread, time::Duration};
 use chrono::{DateTime, Utc};
-use sysinfo::System;
+use sysinfo::{ProcessStatus, System};
 use termion::{clear, cursor};
 
 fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
@@ -14,14 +14,14 @@ fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
 //FIXME: &str or String?
 
 struct ProcessInfo {
-    pid: String,
+    pid: u32,
     p_name: String,
-    p_cpu_usage: String,
-    p_read_bytes: String,
-    p_written_bytes: String,
-    p_elapsed_time: String, 
-    p_status: String,
-    p_cmd: String
+    p_cpu_usage: f32,
+    p_read_bytes: u64,
+    p_written_bytes: u64,
+    p_elapsed_time: i64, 
+    p_status: ProcessStatus,
+    p_cmd: OsString
 }
 
 fn main() {

@@ -5,7 +5,9 @@ use termion::{clear, cursor};
 
 //FIXME: &str or String?
 
+const REFRESH_DURATION: Duration = Duration::from_secs(2);
 const PROCESS_LIMIT: usize = 15;
+const COL_WIDTH: usize = 12;
 
 struct ProcessInfo {
     pid: u32,

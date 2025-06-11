@@ -1,7 +1,22 @@
-use std::{ffi::OsString, io::{self, Write}, thread, time::Duration};
+use std::{ffi::{OsStr, OsString}, io::{self, Write}, thread, time::Duration};
 use chrono::{DateTime, Utc};
-use sysinfo::{ProcessStatus, System};
+use sysinfo::{Process, ProcessStatus, System};
 use termion::{clear, cursor};
+
+//FIXME: &str or String?
+
+const PROCESS_LIMIT: usize = 15;
+
+struct ProcessInfo {
+    pid: u32,
+    name: OsString,
+    cpu_usage: f32,
+    read_bytes: u64,
+    written_bytes: u64,
+    elapsed_time: i64, 
+    status: ProcessStatus,
+    cmd: OsString
+}
 
 fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
     if s.len() > max_len {
@@ -11,17 +26,32 @@ fn truncate_and_ellipsis(s: &str, max_len: usize) -> String {
     }
 }
 
-//FIXME: &str or String?
+fn gather_process_data(sys: &System) -> Vec<ProcessInfo> {
+    let mut processes: Vec< &Process> = sys.processes().values().collect();
+    processes.sort_unstable_by(|a, b| b.cpu_usage().partial_cmp(&a.cpu_usage()).unwrap_or(std::cmp::Ordering::Equal));
 
-struct ProcessInfo {
-    pid: u32,
-    p_name: String,
-    p_cpu_usage: f32,
-    p_read_bytes: u64,
-    p_written_bytes: u64,
-    p_elapsed_time: i64, 
-    p_status: ProcessStatus,
-    p_cmd: OsString
+    processes
+        .iter()
+        .take(PROCESS_LIMIT)
+            .map(|process| {
+                let p_disk_usage = process.disk_usage();
+                let p_start_time_timestamp = process.start_time().to_string().parse::<i64>().unwrap();
+                let p_start_time_date = DateTime::from_timestamp(p_start_time_timestamp, 0).unwrap();
+                let current_date_time = Utc::now();
+                let p_elapsed_time = (current_date_time - p_start_time_date).num_minutes();
+
+                ProcessInfo {
+                    pid: process.pid().as_u32(),
+                    name: process.name().to_os_string(),
+                    cpu_usage: process.cpu_usage(),
+                    read_bytes: p_disk_usage.read_bytes,
+                    written_bytes: p_disk_usage.written_bytes,
+                    elapsed_time: p_elapsed_time,
+                    status: process.status(),
+                    cmd: process.cmd().join(&OsString::from(" ")),
+                }
+            })
+            .collect()
 }
 
 fn main() {
@@ -52,12 +82,12 @@ fn main() {
 
             let p_read_bytes = p_disk_usage.total_read_bytes;
             let p_written_bytes = p_disk_usage.total_written_bytes;
-
+            
             let p_start_time_timestamp = process.start_time().to_string().parse::<i64>().unwrap();
             let p_start_time_date = DateTime::from_timestamp(p_start_time_timestamp, 0).unwrap();
             let current_date_time = Utc::now();
-
             let p_elapsed_time = (current_date_time - p_start_time_date).num_minutes();
+            
 
             let p_status = process.status();
 

@@ -93,6 +93,16 @@ fn run<W: Write>(screen: &mut W, sys: &mut System) -> Result<(), Box<dyn Error>>
     }
 }
 
+enum SortBy {
+    Pid,
+    Name,
+    Cpu,
+    ReadBytes,
+    WrittenBytes,
+    ElapsedTime,
+    Status
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let mut sys = System::new_all();
     let mut screen = stdout().into_alternate_screen()?;

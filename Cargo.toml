@@ -8,3 +8,4 @@ chrono = "0.4.41"
 clearscreen = "4.0.1"
 sysinfo = "0.35.1"
 termion = "4.0.5"
+clap = { version = "4.5", features = ["derive"] }
